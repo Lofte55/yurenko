@@ -124,8 +124,10 @@ ul,ol{ padding:0; list-style:none; }
 .btn-accent:hover{ background:var(--teal); color:#fff; }
 .btn-ghost{ border-color:var(--fog); color:var(--ink); background:transparent; }
 .btn-ghost:hover{ border-color:var(--ink); }
-.dark .btn-ghost{ border-color:#3b4341; color:#fff; }
-.dark .btn-ghost:hover{ border-color:#fff; }
+.dark .btn-ghost,
+.cookie-bar .btn-ghost{ border-color:#3b4341; color:#fff; }
+.dark .btn-ghost:hover,
+.cookie-bar .btn-ghost:hover{ border-color:#fff; }
 .btn-light{ background:#fff; color:var(--ink); }
 .btn-light:hover{ background:var(--wash); }
 .btn-sm{ padding:11px 22px; font-size:13px; }

@@ -1,57 +1,139 @@
-/* Генератор ТЗ */
+/* Генератор ТЗ — флагманский инструмент сайта, поэтому оболочка держит
+   больше воздуха и веса, чем рядовая карточка: мягкая тень, акцентная
+   подсветка сверху, крупный степпер. Токены и accent — из base.css. */
 
 .gen-shell{
+  position:relative; overflow:hidden;
   border:1px solid var(--mist); border-radius:var(--r-lg); background:#fff;
-  overflow:hidden;
+  box-shadow:0 50px 90px -50px rgba(9,20,19,.28), 0 2px 0 rgba(9,20,19,.02);
 }
-.gen-head{ padding:var(--s24) var(--s32) 0; }
-.gen-progress{ height:3px; background:var(--mist); border-radius:3px; overflow:hidden; margin-top:var(--s20); }
-.gen-progress i{ display:block; height:100%; background:var(--tiffany); width:0; transition:width .45s var(--ease); }
+.gen-shell::before{
+  content:""; position:absolute; right:-120px; top:-160px; width:420px; height:420px;
+  border-radius:50%; pointer-events:none;
+  background:radial-gradient(closest-side, rgba(10,186,181,.10), rgba(10,186,181,0) 70%);
+}
 
-.gen-steps{ display:flex; gap:6px; flex-wrap:wrap; }
+.gen-head{ position:relative; padding:var(--s32) var(--s32) 0; }
+
+/* ---------- Степпер ---------- */
+.gen-steps{
+  display:flex; align-items:center; gap:2px; position:relative;
+  overflow-x:auto; scrollbar-width:none;
+}
+.gen-steps::-webkit-scrollbar{ display:none; }
+
 .gstep{
-  display:inline-flex; align-items:center; gap:7px; border:0; background:none; cursor:default;
-  font-size:12px; font-weight:700; color:var(--ash); padding:6px 10px; border-radius:var(--r-btn);
+  display:flex; align-items:center; gap:9px; border:0; background:none; cursor:default;
+  font-size:13px; font-weight:700; color:var(--ash); padding:9px 14px 9px 9px;
+  border-radius:var(--r-btn); white-space:nowrap; flex:none;
   transition:color .25s var(--ease), background .25s var(--ease);
 }
 .gstep b{
-  width:20px; height:20px; border-radius:50%; display:grid; place-items:center;
-  background:var(--mist); color:var(--slate); font-size:11px; font-weight:700;
-  transition:background .25s var(--ease), color .25s var(--ease);
+  width:26px; height:26px; border-radius:50%; display:grid; place-items:center; flex:none;
+  background:var(--mist); color:var(--slate); font-size:12px; font-weight:800;
+  transition:background .25s var(--ease), color .25s var(--ease), transform .25s var(--ease);
 }
 .gstep.done{ color:var(--teal); cursor:pointer; }
+.gstep.done:hover{ background:var(--wash-soft); }
 .gstep.done b{ background:var(--wash); color:var(--teal); }
-.gstep.on{ color:var(--ink); background:var(--wash-soft); }
-.gstep.on b{ background:var(--tiffany); color:#fff; }
+.gstep.on{ color:var(--ink); }
+.gstep.on b{
+  background:var(--tiffany); color:#fff; transform:scale(1.08);
+  box-shadow:0 6px 16px -6px rgba(10,186,181,.55);
+}
 
-.gen-body{ padding:var(--s32); min-height:340px; }
-.gen-body.fade{ animation:genIn .4s var(--ease); }
-@keyframes genIn{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:none; } }
+/* Разделитель между шагами — тонкий штрих вместо ещё одной рамки. */
+.gstep + .gstep::before{
+  content:""; width:16px; height:1px; background:var(--mist); flex:none; margin-inline:-2px 4px;
+}
+
+.gen-progress{
+  height:4px; background:var(--mist); border-radius:4px; overflow:hidden; margin-top:var(--s20);
+  position:relative;
+}
+.gen-progress i{
+  display:block; height:100%; border-radius:4px; width:0;
+  background:linear-gradient(90deg, var(--tiffany), var(--teal));
+  transition:width .5s var(--ease); position:relative;
+}
+.gen-progress i::after{
+  content:""; position:absolute; right:-4px; top:50%; width:10px; height:10px; border-radius:50%;
+  background:var(--tiffany); transform:translateY(-50%);
+  box-shadow:0 0 0 4px var(--wash), 0 2px 8px -1px rgba(10,186,181,.6);
+}
+
+.gen-title{
+  font-size:clamp(24px, 3vw, 30px); line-height:1.2; font-weight:700; letter-spacing:-.02em;
+}
+
+.gen-body{ position:relative; padding:var(--s40) var(--s32); min-height:360px; }
+.gen-body.fade{ animation:genIn .45s var(--ease); }
+@keyframes genIn{ from{ opacity:0; transform:translateY(14px);} to{ opacity:1; transform:none; } }
 
 .gen-foot{
-  display:flex; align-items:center; gap:16px; padding:var(--s20) var(--s32);
+  display:flex; align-items:center; gap:16px; padding:var(--s24) var(--s32);
   border-top:1px solid var(--mist); background:var(--wash-soft);
 }
 .gen-foot .count{ font-size:12px; font-weight:700; color:var(--slate); margin-right:auto; }
+.gen-foot .btn-accent{ padding:15px 32px; }
 
-/* Сфера */
-.scope-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+/* ---------- Сфера ---------- */
+/* Два столбца, а не три: карточкам нужно место под иконку, цену и описание,
+   чтобы не превращаться в плотный бюрократический список. */
+.scope-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
 .scope{
-  text-align:left; background:#fff; border:1px solid var(--mist); border-radius:var(--r-card);
-  padding:18px; cursor:pointer; display:flex; flex-direction:column; gap:7px;
-  transition:border-color .25s var(--ease), background .25s var(--ease), transform .25s var(--ease);
+  position:relative; text-align:left; background:#fff; border:1px solid var(--mist);
+  border-radius:var(--r-lg); padding:24px; cursor:pointer;
+  display:flex; flex-direction:column; gap:4px;
+  opacity:0; transform:translateY(10px);
+  animation:scopeIn .5s var(--ease) forwards;
+  animation-delay:calc(var(--i) * .06s);
+  transition:border-color .25s var(--ease), background .25s var(--ease),
+             transform .25s var(--ease), box-shadow .25s var(--ease);
 }
-.scope:hover{ border-color:var(--tiffany); transform:translateY(-2px); }
-.scope.on{ border-color:var(--tiffany); background:var(--wash-soft); }
-.scope-t{ font-size:var(--text-sm); font-weight:700; line-height:1.3; }
-.scope-d{ font-size:12.5px; color:var(--slate); line-height:1.45; }
-.scope-p{ font-size:12px; font-weight:700; color:var(--teal); margin-top:auto; padding-top:6px; }
+@keyframes scopeIn{ to{ opacity:1; transform:none; } }
+@media (prefers-reduced-motion:reduce){ .scope{ opacity:1; transform:none; animation:none; } }
 
-/* Опции-чекбоксы */
+.scope:hover{
+  border-color:var(--tiffany); transform:translateY(-3px);
+  box-shadow:0 22px 40px -26px rgba(10,186,181,.35);
+}
+.scope.on{ border-color:var(--tiffany); background:var(--wash-soft); }
+
+/* Галочка выбранной карточки: круг рисуется ::before (снизу),
+   галочка — ::after (сверху), таков порядок отрисовки псевдоэлементов. */
+.scope.on::before{
+  content:""; position:absolute; top:20px; right:20px; width:24px; height:24px;
+  border-radius:50%; background:var(--tiffany);
+}
+.scope.on::after{
+  content:""; position:absolute; top:27px; right:27px; width:9px; height:5px;
+  border-left:2px solid #fff; border-bottom:2px solid #fff; transform:rotate(-48deg);
+}
+
+.scope-icon{
+  width:52px; height:52px; border-radius:var(--r-card); background:var(--wash);
+  display:grid; place-items:center; flex:none; margin-bottom:14px;
+  transition:background .25s var(--ease);
+}
+.scope-icon svg{ width:26px; height:26px; stroke:var(--teal); fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.scope.on .scope-icon{ background:var(--tiffany); }
+.scope.on .scope-icon svg{ stroke:#fff; }
+
+.scope-t{ font-size:18px; font-weight:700; line-height:1.3; letter-spacing:-.01em; padding-right:24px; }
+.scope-d{ font-size:14px; color:var(--slate); line-height:1.5; margin-top:2px; }
+.scope-p{
+  display:inline-flex; align-self:flex-start; margin-top:14px;
+  border-radius:var(--r-btn); background:var(--wash); color:var(--teal-deep);
+  padding:6px 14px; font-size:12.5px; font-weight:700;
+}
+.scope.on .scope-p{ background:#fff; }
+
+/* ---------- Опции-чекбоксы ---------- */
 .opt-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:var(--s24); }
 .opt{
   display:flex; align-items:center; gap:11px; border:1px solid var(--mist);
-  border-radius:var(--r-btn); padding:12px 18px; cursor:pointer; font-size:var(--text-sm);
+  border-radius:var(--r-btn); padding:13px 18px; cursor:pointer; font-size:var(--text-sm);
   transition:border-color .22s var(--ease), background .22s var(--ease);
 }
 .opt:hover{ border-color:var(--fog); }
@@ -61,11 +143,11 @@
 
 .f-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:var(--s16); }
 
-/* Результат */
+/* ---------- Результат ---------- */
 .gen-shell.done .gen-head,
 .gen-shell.done .gen-body,
 .gen-shell.done .gen-foot{ display:none; }
-#gen-result{ display:none; padding:var(--s32); }
+#gen-result{ display:none; padding:var(--s40) var(--s32); }
 .gen-shell.done #gen-result{ display:block; }
 
 .tz{
@@ -76,9 +158,9 @@
 }
 
 @media print{
-  .topbar,.nav,.footer,.totop,.gen-head,.gen-foot,.row,.crumbs,.mobile-menu{ display:none !important; }
+  .topbar,.nav,.footer,.totop,.wa-fab,.cookie-bar,.gen-head,.gen-foot,.row,.crumbs,.mobile-menu{ display:none !important; }
   .tz{ background:#fff; color:#000; max-height:none; padding:0; }
-  .gen-shell{ border:0; }
+  .gen-shell{ border:0; box-shadow:none; }
 }
 
 @media (max-width:860px){

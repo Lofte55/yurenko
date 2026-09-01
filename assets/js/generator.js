@@ -172,6 +172,17 @@
     }
   };
 
+
+  /* Пиктограммы сфер — та же линия, что и .svc-icon на страницах услуг. */
+  var SCOPE_ICONS = {
+    mall: '<svg viewBox="0 0 24 24"><path d="M3 21h18M4 21V9l8-5 8 5v12"/><path d="M9 21v-7h6v7"/><path d="M3 9h18"/></svg>',
+    store: '<svg viewBox="0 0 24 24"><path d="M4 9h16v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M3 9l1.6-4.4A1 1 0 0 1 5.5 4h13a1 1 0 0 1 .9.6L21 9"/><path d="M9 21v-6h6v6"/></svg>',
+    island: '<svg viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>',
+    food: '<svg viewBox="0 0 24 24"><path d="M7 3v6a3 3 0 0 0 3 3v9"/><path d="M7 3v6M11 3v6"/><path d="M17 3c-2 0-3 2-3 5s1 4 3 4v9"/></svg>',
+    windows: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 12h18M12 4v16"/></svg>',
+    training: '<svg viewBox="0 0 24 24"><path d="M12 4L2 9l10 5 10-5-10-5z"/><path d="M6 11.5V17c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/></svg>'
+  };
+
   var STEPS = ['scope', 'object', 'goals', 'works', 'limits', 'materials', 'contacts'];
   var STEP_TITLES = ['Сфера', 'Объект', 'Цели', 'Состав', 'Условия', 'Материалы', 'Контакты'];
 
@@ -216,21 +227,22 @@
 
   var renderers = {
     scope: function () {
-      var cards = Object.keys(SCOPES).map(function (k) {
+      var cards = Object.keys(SCOPES).map(function (k, i) {
         var s = SCOPES[k];
-        return '<button type="button" class="scope' + (state.scope === k ? ' on' : '') + '" data-scope="' + k + '">' +
+        return '<button type="button" class="scope' + (state.scope === k ? ' on' : '') + '" data-scope="' + k + '" style="--i:' + i + '">' +
+          '<span class="scope-icon">' + SCOPE_ICONS[k] + '</span>' +
           '<span class="scope-t">' + esc(s.title) + '</span>' +
           '<span class="scope-d">' + esc(s.lead) + '</span>' +
           '<span class="scope-p">' + esc(s.price) + '</span></button>';
       }).join('');
-      return '<h2 class="h3">Что нужно спроектировать?</h2>' +
-        '<p class="small mt-8">От выбора зависят следующие вопросы и структура документа.</p>' +
-        '<div class="scope-grid mt-24">' + cards + '</div>';
+      return '<h2 class="gen-title">Что нужно спроектировать?</h2>' +
+        '<p class="lead mt-8">От выбора зависят следующие вопросы и структура документа.</p>' +
+        '<div class="scope-grid mt-32">' + cards + '</div>';
     },
 
     object: function () {
       var s = SCOPES[state.scope], o = state.object;
-      return '<h2 class="h3">' + esc(s.objectLabel) + '</h2>' +
+      return '<h2 class="gen-title">' + esc(s.objectLabel) + '</h2>' +
         '<p class="small mt-8">Чем точнее вводные, тем ближе к реальности будет оценка.</p>' +
         '<div class="f-grid mt-24">' +
         field('object.name', 'Название объекта или бренда', o.name, 'Например: Trend Island') +
@@ -244,7 +256,7 @@
 
     goals: function () {
       var s = SCOPES[state.scope];
-      return '<h2 class="h3">Каких целей нужно достичь?</h2>' +
+      return '<h2 class="gen-title">Каких целей нужно достичь?</h2>' +
         '<p class="small mt-8">Выберите всё подходящее — цели попадут в раздел «Требования и метрики».</p>' +
         checkList('goals', s.goals, state.goals) +
         '<div class="field mt-24"><label for="goalOther">Своя формулировка</label>' +
@@ -253,14 +265,14 @@
 
     works: function () {
       var s = SCOPES[state.scope];
-      return '<h2 class="h3">Что должно войти в объём работ?</h2>' +
+      return '<h2 class="gen-title">Что должно войти в объём работ?</h2>' +
         '<p class="small mt-8">Не уверены — отметьте то, что точно нужно. Остальное предложим сами при оценке.</p>' +
         checkList('works', s.works, state.works);
     },
 
     limits: function () {
       var l = state.limits;
-      return '<h2 class="h3">Сроки, бюджет и ограничения</h2>' +
+      return '<h2 class="gen-title">Сроки, бюджет и ограничения</h2>' +
         '<p class="small mt-8">Эти данные не публикуются и нужны только для оценки реалистичности.</p>' +
         '<div class="f-grid mt-24">' +
         select('limits.deadline', 'Желаемый срок', l.deadline, ['Срочно, до 2 недель', '1 месяц', '2–3 месяца', 'Более 3 месяцев', 'Пока не определён']) +
@@ -274,7 +286,7 @@
 
     materials: function () {
       var opts = ['План помещения или обмер', 'Фото объекта и галереи', 'Видео обхода', 'Брендбук', 'Ассортиментная матрица', 'Регламент торгового центра', 'Действующий дизайн-проект', 'Данные по трафику и конверсии'];
-      return '<h2 class="h3">Что вы можете предоставить?</h2>' +
+      return '<h2 class="gen-title">Что вы можете предоставить?</h2>' +
         '<p class="small mt-8">Чем больше исходных данных, тем короче этап аналитики.</p>' +
         checkList('materials', opts, state.materials) +
         '<div class="field mt-24"><label for="materialsNote">Комментарий к материалам</label>' +
@@ -283,7 +295,7 @@
 
     contacts: function () {
       var c = state.contacts;
-      return '<h2 class="h3">Куда прислать готовое ТЗ?</h2>' +
+      return '<h2 class="gen-title">Куда прислать готовое ТЗ?</h2>' +
         '<p class="small mt-8">Документ уйдёт вам на почту, а мы бесплатно оценим сроки и бюджет по нему.</p>' +
         '<div class="f-grid mt-24">' +
         field('contacts.name', 'Имя', c.name, 'Как к вам обращаться') +
