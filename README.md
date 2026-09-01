@@ -8,7 +8,8 @@
 ## Быстрый старт
 
 ```bash
-npm run dev
+npm run dev     # сборка + сервер на :3140
+npm run og      # перерисовать превью-картинки для соцсетей
 ```
 
 Собирает сайт в `public/` и открывает его на `http://localhost:3140/`.
@@ -36,4 +37,4 @@ public/         результат сборки — публикуется Verce
 
 Задайте переменные окружения в Vercel, иначе заявки никуда не придут:
 `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `RESEND_API_KEY`, `MAIL_FROM`, `MAIL_TO`,
-`ALLOWED_ORIGIN`. Подробности — в [PROJECT.md](PROJECT.md#6-приём-заявок).
+`ALLOWED_ORIGIN`. Подробности — в [PROJECT.md](PROJECT.md#7-приём-заявок).
