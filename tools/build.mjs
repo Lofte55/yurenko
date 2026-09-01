@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Static assembler: pages/*.html + partials -> site root.
+/* Static assembler: pages/*.html + partials -> public/
    Each page starts with a META block:
    <!--META
    route: /services/
@@ -8,12 +8,18 @@
    jsonld: {...}          (optional, single line)
    scripts: /assets/js/generator.js   (optional, comma separated)
    -->                                                                */
-import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync, cpSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const out = join(root, 'public');
 const read = (p) => readFileSync(join(root, p), 'utf8');
+
+// Чистая пересборка: public целиком принадлежит скрипту.
+rmSync(out, { recursive: true, force: true });
+mkdirSync(out, { recursive: true });
+cpSync(join(root, 'assets'), join(out, 'assets'), { recursive: true });
 
 const head = read('partials/head.html');
 const header = read('partials/header.html');
@@ -72,7 +78,7 @@ ${extra}
 </html>
 `;
 
-  const dir = join(root, route === '/' ? '.' : route.replace(/^\/|\/$/g, ''));
+  const dir = join(out, route === '/' ? '.' : route.replace(/^\/|\/$/g, ''));
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, 'index.html'), html);
   routes.push({ route, priority: route === '/' ? '1.0' : route.split('/').length > 3 ? '0.7' : '0.8' });
@@ -80,10 +86,10 @@ ${extra}
 }
 
 const today = new Date().toISOString().slice(0, 10);
-writeFileSync(join(root, 'sitemap.xml'),
+writeFileSync(join(out, 'sitemap.xml'),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
   routes.map((r) => `  <url><loc>${SITE}${r.route}</loc><lastmod>${today}</lastmod><priority>${r.priority}</priority></url>`).join('\n') +
   `\n</urlset>\n`);
 
-writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${SITE}/sitemap.xml\n`);
-console.log('sitemap + robots written');
+writeFileSync(join(out, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${SITE}/sitemap.xml\n`);
+console.log('sitemap + robots written -> public/');

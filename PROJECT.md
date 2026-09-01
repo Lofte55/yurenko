@@ -63,12 +63,15 @@ Google Fonts — важно для доступности сайта в Росс
 ## 3. Как устроена сборка
 
 Каждая страница = один файл в `pages/`, состоящий из META-блока и разметки `<main>`.
-Скрипт `tools/build.mjs` подставляет общие шапку, подвал и `<head>` и раскладывает
-результат по папкам маршрутов.
+Скрипт `tools/build.mjs` подставляет общие шапку, подвал и `<head>`, копирует статику
+и складывает готовый сайт в папку **`public/`** — именно её публикует Vercel.
 
 ```
-pages/services-training.html        →  services/training/index.html
+pages/services-training.html   →   public/services/training/index.html
+assets/                        →   public/assets/
 ```
+
+Папка `public/` пересоздаётся при каждой сборке с нуля и не хранится в git.
 
 Запуск сборки:
 
@@ -118,12 +121,10 @@ jsonld: {"@context":"https://schema.org", ...}
 
 | Файл | Почему |
 |---|---|
-| `index.html` в корне | Генерируется из `pages/index.html` |
-| `about/index.html`, `cases/index.html`, `contacts/index.html`, `generator/index.html`, `policy/index.html`, `revizor/index.html`, `services/**/index.html` | Генерируются из соответствующих файлов в `pages/` |
-| `sitemap.xml`, `robots.txt` | Генерируются скриптом сборки |
+| Вся папка `public/` | Результат сборки. Удаляется и создаётся заново при каждом `npm run build`, в git не хранится |
 
-**Правило простое:** если правку внесли в `index.html` внутри папки маршрута — она
-исчезнет при следующем `npm run build`. Ищите исходник в `pages/`.
+**Правило простое:** если правку внесли внутри `public/` — она исчезнет при следующей
+сборке. Ищите исходник в `pages/`, `partials/` или `assets/`.
 
 ### Как добавить новую страницу
 
@@ -188,11 +189,11 @@ jsonld: {"@context":"https://schema.org", ...}
 ## 7. Локальная разработка
 
 ```bash
-npm run build
-npx serve -l 3140 .
+npm run dev
 ```
 
-Откройте `http://localhost:3140/`. Формы локально работать не будут: `/api/submit`
+Собирает сайт и поднимает статику из `public/` на `http://localhost:3140/`.
+Только сборка — `npm run build`. Формы локально работать не будут: `/api/submit`
 существует только на Vercel. Чтобы проверить и API, поставьте Vercel CLI и запустите
 `vercel dev`.
 
@@ -201,11 +202,14 @@ npx serve -l 3140 .
 ## 8. Деплой на Vercel
 
 1. Импортируйте репозиторий `Lofte55/yurenko` в Vercel.
-2. Framework Preset — **Other**. Build Command — `npm run build`. Output Directory — оставьте пустым (корень).
+2. Framework Preset — **Other**. Build Command и Output Directory подставятся из
+   `vercel.json` — `npm run build` и `public`, менять в интерфейсе ничего не нужно.
 3. Добавьте переменные окружения из раздела 6.
 4. Подключите домен.
 
-`vercel.json` уже настроен: чистые URL, слэш в конце, годовое кеширование статики.
+`vercel.json` задаёт: команду сборки, выходную папку `public`, чистые URL, слэш в конце
+и годовое кеширование статики. Функции из `api/` Vercel подхватывает из корня репозитория,
+копировать их в `public/` не нужно и нельзя.
 
 ---
 
