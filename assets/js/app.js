@@ -307,6 +307,16 @@
   };
   window.yuEnhanceSelects();
 
+
+  /* ---- WhatsApp floating button: track as a Metrika goal ---- */
+  $$('[data-wa-track]').forEach(function (a) {
+    a.addEventListener('click', function () {
+      if (typeof window.ym === 'function') {
+        window.ym(112141491, 'reachGoal', 'whatsapp_click');
+      }
+    });
+  });
+
   /* ---- Mark active nav link ---- */
   var path = location.pathname.replace(/index\.html$/, '');
   $$('.nav-link[href], .mobile-menu a[href]').forEach(function (a) {
