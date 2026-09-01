@@ -317,6 +317,31 @@
     });
   });
 
+
+  /* ---- Cookie consent bar ---- */
+  var cookieBar = $('#cookieBar');
+  if (cookieBar) {
+    var CONSENT_KEY = 'yu_cookie_consent';
+    var consent = null;
+    try { consent = localStorage.getItem(CONSENT_KEY); } catch (e) { /* storage unavailable */ }
+
+    if (!consent) {
+      setTimeout(function () { cookieBar.classList.add('show'); }, 600);
+    }
+
+    var setConsent = function (value) {
+      try { localStorage.setItem(CONSENT_KEY, value); } catch (e) { /* noop */ }
+      cookieBar.classList.remove('show');
+      if (value === 'all' && typeof window.ym === 'function') {
+        window.ym(112141491, 'reachGoal', 'cookie_accept');
+      }
+    };
+    var acceptBtn = $('#cookieAccept', cookieBar);
+    var declineBtn = $('#cookieDecline', cookieBar);
+    if (acceptBtn) acceptBtn.addEventListener('click', function () { setConsent('all'); });
+    if (declineBtn) declineBtn.addEventListener('click', function () { setConsent('necessary'); });
+  }
+
   /* ---- Mark active nav link ---- */
   var path = location.pathname.replace(/index\.html$/, '');
   $$('.nav-link[href], .mobile-menu a[href]').forEach(function (a) {
