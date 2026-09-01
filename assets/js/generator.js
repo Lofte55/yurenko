@@ -337,6 +337,7 @@
     elBody.classList.remove('fade');
     void elBody.offsetWidth;
     elBody.classList.add('fade');
+    if (window.yuEnhanceSelects) window.yuEnhanceSelects(elBody);
     bind();
   }
 

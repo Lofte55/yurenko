@@ -12,10 +12,11 @@
 <meta property="og:locale" content="ru_RU">
 <meta property="og:url" content="https://yurenko.ru/services/consulting/">
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link rel="preload" href="/assets/fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts/manrope.css">
 <link rel="stylesheet" href="/assets/css/base.css">
+
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Консультация и маркетинговый аудит торгового пространства","provider":{"@type":"Organization","name":"YURENKO"},"offers":{"@type":"Offer","price":"15000","priceCurrency":"RUB","unitText":"час"}}</script>
 </head>
 <body>
@@ -82,8 +83,9 @@
 
 <section class="phero">
   <div class="wrap">
+    <span class="svc-icon svc-icon-lg" style="margin-bottom:20px"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/><path d="M11 8v6M8 11h6"/></svg></span>
     <p class="eyebrow eyebrow-accent">Быстрый вход в работу</p>
-    <h1 class="h1">Разбор объекта, после которого <span class="hl">понятно, что делать в понедельник</span></h1>
+    <h1 class="display mt-16">Разбор объекта, после которого <span class="hl">понятно, что делать в понедельник</span></h1>
     <p class="lead">Не всякая задача требует проекта и стройки. Часто достаточно посмотреть на витрину, вход и первые метры зала свежим взглядом — и переставить то, что уже есть. Консультация даёт список изменений с приоритетом: что даёт эффект сразу и бесплатно, а что требует бюджета.</p>
     <div class="phero-meta">
       <div><span class="k">Цена</span><span class="v">от 15 000 ₽ / час</span></div>
