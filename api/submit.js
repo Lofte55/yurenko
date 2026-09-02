@@ -91,7 +91,7 @@ export default async function handler(req, res) {
         `<p>Здравствуйте${fields.name ? ', ' + esc(fields.name) : ''}!</p>` +
         `<p>Ниже — техническое задание, которое вы собрали на yurenko.ru. Мы получили копию и вернёмся с оценкой сроков и бюджета в течение рабочего дня.</p>` +
         `<pre style="white-space:pre-wrap;font-family:ui-monospace,monospace">${esc(doc)}</pre>` +
-        `<p>Команда YURENKO · +7 965 319-34-07</p>`));
+        `<p>Команда YURENKO · +7 993 339-34-07</p>`));
     }
   }
 
