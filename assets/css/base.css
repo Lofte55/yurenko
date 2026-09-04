@@ -244,14 +244,26 @@ ul,ol{ padding:0; list-style:none; }
   content:""; position:absolute; inset:0; opacity:.5; pointer-events:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.32'/%3E%3C/svg%3E");
 }
+/* Фото — самостоятельный слой над hero-canvas, а не его содержимое: так низ
+   снимка может выходить за нижнюю рамку карточки на белое поле страницы
+   (эффект «портрет чуть выступает из кадра», как в референсе), при этом верх
+   остаётся аккуратно скруглён заодно с канвой. hero-canvas при этом виден
+   только на долю секунды до загрузки фото — держим его как фон-заглушку.
+   ⚠️ Высота считается СВОИМ aspect-ratio, а не % от hero-stage: на мобильном
+   чипы становятся static и растягивают hero-stage чипами под фото — inset
+   в процентах/px от него давал не +36px, а рост в разы (жёсткий зум портрета). */
 .hero-person{
-  position:absolute; left:50%; bottom:0; transform:translateX(-50%);
-  width:clamp(260px, 42%, 480px); z-index:2;
-  mix-blend-mode:multiply;
-  -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
-  mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
+  position:absolute; top:0; left:0; right:0; z-index:2; width:100%;
+  aspect-ratio:1120/666; border-radius:var(--r-lg) var(--r-lg) 0 0; overflow:hidden;
 }
-.hero-person img{ width:100%; height:auto; display:block; }
+.hero-person img{
+  width:100%; height:100%; object-fit:cover; object-position:50% 12%; display:block;
+}
+.hero-person::after{
+  content:""; position:absolute; left:0; right:0; bottom:0; height:36px;
+  background:linear-gradient(to bottom, rgba(255,255,255,0), #fff 92%);
+  pointer-events:none;
+}
 
 .hero-chip{
   position:absolute; z-index:3; background:#fff; border-radius:var(--r-card);
@@ -305,7 +317,8 @@ ul,ol{ padding:0; list-style:none; }
 @media (max-width:900px){
   .hero-stage{ padding-bottom:0; }
   .hero-canvas{ aspect-ratio:1/1; }
-  .hero-person{ width:80%; }
+  .hero-person{ aspect-ratio:1/1.08; }
+  .hero-person::after{ height:24px; }
   .hero-chip{ position:static; width:100%; margin-top:12px; box-shadow:none; border:1px solid var(--mist); }
   .hero-chips-m{ display:flex; flex-direction:column; }
 }
