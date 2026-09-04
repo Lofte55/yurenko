@@ -8,9 +8,10 @@
    jsonld: {...}          (optional, single line)
    scripts: /assets/js/generator.js   (optional, comma separated)
    -->                                                                */
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync, cpSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync, cpSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const out = join(root, 'public');
@@ -20,6 +21,25 @@ const read = (p) => readFileSync(join(root, p), 'utf8');
 rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
 cpSync(join(root, 'assets'), join(out, 'assets'), { recursive: true });
+
+/* ⚠️ vercel.json кеширует всё /assets/* на год как immutable. Без версии в
+   URL браузер, once закешировавший base.css/app.js, никогда не увидит новую
+   правку — HTML обновится с деплоем, а CSS/JS останутся старыми (ровно так
+   выглядел баг с «фото сплющено»: разметка новая, стили из прошлого кеша).
+   Хеш от содержимого css/js — меняется только когда меняется сам файл. */
+const BUILD_V = (() => {
+  const h = createHash('sha256');
+  const walk = (dir) => {
+    for (const name of readdirSync(dir).sort()) {
+      const p = join(dir, name);
+      const st = statSync(p);
+      if (st.isDirectory()) walk(p);
+      else if (/\.(css|js)$/.test(name)) h.update(readFileSync(p));
+    }
+  };
+  walk(join(root, 'assets'));
+  return h.digest('hex').slice(0, 10);
+})();
 
 const head = read('partials/head.html');
 const header = read('partials/header.html');
@@ -111,7 +131,7 @@ for (const file of readdirSync(join(root, 'pages')).sort()) {
     });
   }
 
-  const html = `<!DOCTYPE html>
+  const htmlUnversioned = `<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -157,6 +177,11 @@ ${extra}
 </body>
 </html>
 `;
+
+  const html = htmlUnversioned.replace(
+    /(href|src)="(\/assets\/[^"?]+\.(?:css|js))"/g,
+    (_m, attr, url) => `${attr}="${url}?v=${BUILD_V}"`
+  );
 
   if (route === '/404/') {
     // Vercel отдаёт 404.html из корня выходной папки для несуществующих адресов.
