@@ -718,3 +718,8 @@ a.card:hover{ border-color:var(--tiffany); transform:translateY(-3px); }
 }
 .case-list li{ padding-left:4px; }
 .case-tags{ display:flex; flex-wrap:wrap; gap:8px; padding-bottom:24px; }
+
+.case-img{
+  width:100%; max-width:520px; aspect-ratio:16/9; object-fit:cover;
+  border-radius:var(--r-card); margin-bottom:24px;
+}
