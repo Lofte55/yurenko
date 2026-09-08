@@ -705,3 +705,16 @@ a.card:hover{ border-color:var(--tiffany); transform:translateY(-3px); }
   .cookie-bar-actions{ width:100%; flex:none; }
   .cookie-bar-actions .btn{ flex:1; }
 }
+
+/* ---------- Именные кейсы (аккордеон на /cases/) ---------- */
+.case-head-title{ display:block; }
+.case-head-sub{
+  display:block; font-size:13px; font-weight:500; letter-spacing:0; color:var(--slate);
+  margin-top:4px;
+}
+.case-list{
+  list-style:decimal; padding-left:20px; display:flex; flex-direction:column; gap:10px;
+  color:var(--ink-soft); max-width:70ch; margin-bottom:24px;
+}
+.case-list li{ padding-left:4px; }
+.case-tags{ display:flex; flex-wrap:wrap; gap:8px; padding-bottom:24px; }
